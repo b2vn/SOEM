@@ -427,6 +427,26 @@ boolean ecx_configdc(ecx_contextt *context)
       }
    }
 
+   if (context->slavelist[0].hasdc)
+   {
+       ht = 0;
+       uint16 dcmaster = 0;
+
+       for (i = 1; i <= *(context->slavecount); i++)
+       {
+           if (context->slavelist[i].hasdc)
+           {
+               dcmaster = context->slavelist[i].configadr;
+               break;
+           }
+       }
+
+       for (i = 0; i < 10000; i++)
+           (void)ecx_FRMW(context->port, dcmaster, ECT_REG_DCSYSTIME, sizeof(ht), &ht, EC_TIMEOUTRET);
+
+      // (void)ecx_FPWR(context->port, slaveh, ECT_REG_DCSYSDELAY, sizeof(ht), &ht, EC_TIMEOUTRET);
+   }
+
    return context->slavelist[0].hasdc;
 }
 
